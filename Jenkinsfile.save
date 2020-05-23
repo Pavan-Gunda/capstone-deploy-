@@ -12,7 +12,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker build -t pavangunda66/helloworld .
+						docker build -t pavangunda66/capstone .
 					'''
 				}
 			}
@@ -23,12 +23,10 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push pavangunda66/helloworld
+						docker push pavangunda66/capstone
 					'''
 				}
-			}
-		}
-
+	
 		stage('Deploy blue container') {
 			steps {
 				withAWS(region:'us-east-1', credentials:'pagu18') {
@@ -41,7 +39,7 @@ pipeline {
 
 		stage('Deploy green container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'pagu18') {
+				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
 					sh '''
 						kubectl apply -f ./green-controller.json
 					'''
@@ -51,7 +49,7 @@ pipeline {
 
 		stage('Create the service in the cluster, redirect to blue') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'pagu18') {
+				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
 					sh '''
 						kubectl apply -f ./blue-service.json
 					'''
@@ -67,7 +65,7 @@ pipeline {
 
 		stage('Create the service in the cluster, redirect to green') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'pagu18') {
+				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
 					sh '''
 						kubectl apply -f ./green-service.json
 					'''
