@@ -29,19 +29,9 @@ pipeline {
 			}
 		}
 
-		stage('Set current kubectl context') {
-			steps {
-				withAWS(region:'us-east-1', credentials:'pagu18') {
-					sh '''
-						kubectl config use-context arn:aws:eks:us-east-1:500629302711:cluster/capstonecluster
-					'''
-				}
-			}
-		}
-
 		stage('Deploy blue container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
+				withAWS(region:'us-east-1', credentials:'pagu18') {
 					sh '''
 						kubectl apply -f ./blue-controller.json
 					'''
