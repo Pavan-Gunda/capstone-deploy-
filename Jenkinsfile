@@ -41,7 +41,7 @@ pipeline {
 
 		stage('Deploy green container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
+				withAWS(region:'us-east-1', credentials:pagu18') {
 					sh '''
 						kubectl apply -f ./green-controller.json
 					'''
@@ -51,7 +51,7 @@ pipeline {
 
 		stage('Create the service in the cluster, redirect to blue') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
+				withAWS(region:'us-east-1', credentials:'pagu18') {
 					sh '''
 						kubectl apply -f ./blue-service.json
 					'''
@@ -67,7 +67,7 @@ pipeline {
 
 		stage('Create the service in the cluster, redirect to green') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'ecr_credentials') {
+				withAWS(region:'us-east-1', credentials:'pagu18') {
 					sh '''
 						kubectl apply -f ./green-service.json
 					'''
