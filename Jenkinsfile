@@ -41,7 +41,7 @@ pipeline {
 
 		stage('Deploy green container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:pagu18') {
+				withAWS(region:'us-east-1', credentials:'pagu18') {
 					sh '''
 						kubectl apply -f ./green-controller.json
 					'''
